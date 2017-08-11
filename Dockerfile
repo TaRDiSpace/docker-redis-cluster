@@ -6,6 +6,11 @@ MAINTAINER Johan Andersson <Grokzen@gmail.com>
 ENV HOME /root
 ENV DEBIAN_FRONTEND noninteractive
 
+# Change apt source
+RUN sed -i "s/archive.ubuntu./mirrors.aliyun./g" /etc/apt/sources.list 
+RUN sed -i "s/deb.debian.org/mirrors.aliyun.com/g" /etc/apt/sources.list 
+RUN sed -i "s/security.debian.org/mirrors.aliyun.com\/debian-security/g" /etc/apt/sources.list
+
 # Install system dependencies
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -yqq \
@@ -17,9 +22,11 @@ RUN locale-gen en_US.UTF-8
 ENV LANG       en_US.UTF-8
 ENV LC_ALL     en_US.UTF-8
 
+RUN gem sources --add https://gems.ruby-china.org/ --remove https://rubygems.org/
+RUN gem sources -l
 RUN gem install redis
 
-RUN apt-get install -y gcc make g++ build-essential libc6-dev tcl git supervisor ruby
+RUN apt-get install -y gcc make g++ build-essential libc6-dev tcl git supervisor ruby wget
 
 ARG redis_version=3.2.9
 
